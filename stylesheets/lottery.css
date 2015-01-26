@@ -1,0 +1,69 @@
+body{
+    color: #000;
+    font-size: 13px;
+    font-family: Helvetica;
+    background: #fff;
+    height: 100%;
+    margin: 0px auto;
+}
+
+#lotteryPage .lotteryItem{
+    display: inline;
+    float: left;
+    text-align: center;
+    font-family: Microsoft YaHei;
+    font-size: 10px;
+    color: #ddd;
+    background: rgba(255, 255, 255, 0);
+    /*border: 2px outset #ccc;*/
+    /*overflow: none;*/
+}
+
+#lotteryPage .lotteryItem img{
+    border: 0;
+}
+
+#lotteryPage .lotteryItem label{
+    position: absolute;
+    text-align: center;
+    font-family: Microsoft YaHei;
+    font-size: 30px;
+    font-weight: fold;
+    color: #000;
+}
+
+.thickdiv{
+    position: fixed !important;
+    _position: absolute;
+    top: 0;
+    left: 0;
+    padding-bottom: 500px;
+    margin-bottom: -500px;
+    z-index: 10;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0;
+    color: #ffe700;
+    font-family: Microsoft YaHei;
+    font-size: 120px;
+    font-weight: fold;
+    text-align: center;
+}
+
+.helpdiv {
+    position: fixed !important;
+    _position: absolute;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 500px;
+    margin-bottom: -500px;
+    z-index: 10;
+    width: 100%;
+    height: 50px;
+    border: 0;
+    color: #ffe700;
+    font-family: Microsoft YaHei;
+    font-size: 20px;
+    font-weight: fold;
+    text-align: center;
+}
