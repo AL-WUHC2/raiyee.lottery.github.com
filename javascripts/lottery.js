@@ -25,7 +25,7 @@ var Lottery = {
             error : function() { alert("数据请求失败"); },
             success : function(data) {
                 Lottery.memberLs = data.members || [];
-                Lottery.lotteryData = data.lotteryData;
+                Lottery.lotteryData = data.lotteryData || [];
                 $.each(Lottery.lotteryData, function(index, item) {
                     Lottery.memberLs = $.merge(Lottery.memberLs, item["memb"] || []);
                 });
@@ -111,8 +111,8 @@ var Lottery = {
         // at least increase 1
         var increase = parseInt(Math.random() * (memberCount - 1)) + 1;
         Lottery.currentMemberOrder = (Lottery.currentMemberOrder + increase) % memberCount;
-        if (window.sessionStorage.currentState == "standby" && Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"].length > 0) {
-            while ($.inArray(Lottery.memberLs[Lottery.currentMemberOrder], Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"]) == -1) {
+        if (window.sessionStorage.currentState == "standby" && Lottery.currentLotteryMemberList().length > 0) {
+            while ($.inArray(Lottery.memberLs[Lottery.currentMemberOrder], Lottery.currentLotteryMemberList()) == -1) {
                 Lottery.currentMemberOrder = (Lottery.currentMemberOrder + 1) % memberCount;
             }
         }
@@ -130,9 +130,13 @@ var Lottery = {
 
     confirmLottery : function() {
         Lottery.memberLs.splice($.inArray(Lottery.currentLotteryMember(), Lottery.memberLs), 1);
-        Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"].splice($.inArray(Lottery.currentLotteryMember(), Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"]), 1);
+        Lottery.currentLotteryMemberList().splice($.inArray(Lottery.currentLotteryMember(), Lottery.currentLotteryMemberList()), 1);
         Lottery.resortItems();
     },
+
+    currentLotteryMemberList : function() {
+        return Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"] || [];
+    }
 
 };
 
