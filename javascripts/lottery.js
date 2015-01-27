@@ -1,7 +1,7 @@
 function shuffle(o) {
     for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
-};
+}
 
 var Lottery = {
 
@@ -15,30 +15,74 @@ var Lottery = {
 
     lotteryTimeInterval : 100,
 
+    settingData: {lotteryData: [
+        {name: "三等奖", predefinedNum: 10, memb: []},
+        {name: "二等奖", predefinedNum: 5, memb: []},
+        {name: "一等奖", predefinedNum: 3, memb: []}
+    ],
+        members: ["李晓莉", "童剑", "冯雨","高婷", "卞雅萍", "李田一",
+            "杜颖", "牛洋", "刘雷", "高禹", "付强",
+            "严宾", "袁帅帅", "李栋栋", "耿晋普", "刘华洋",
+            "冯高飞", "闫永红", "周宇", "孙俊", "曹盛",
+            "刘嗣颉", "张发官", "熊震霏", "王彬彬", "陈江南", "吉思静",
+            "张鑫", "陈龙", "刘明玥", "汪沁", "宋瑶", "储韩菲", "桂冠"]
+    },
+
     initialLotteryData : function() {
-        $.ajax({
-            type : "get",
-            url : "http://al-wuhc2.github.io/raiyee.lottery.data.github.com/lottery.js",
-            cache : false, //默认值true
-            dataType : "jsonp",
-            jsonpCallback : "lottery_data",
-            error : function() { alert("数据请求失败"); },
-            success : function(data) {
+//        $.ajax({
+//            type : "get",
+//            url : "http://al-wuhc2.github.io/raiyee.lottery.data.github.com/lottery.js",
+//            cache : false, //默认值true
+//            dataType : "jsonp",
+//            jsonpCallback : "lottery_data",
+//            error : function() { alert("数据请求失败"); },
+//            success : function(data) {
+                var data = Lottery.settingData;
                 Lottery.memberLs = data.members || [];
                 Lottery.lotteryData = data.lotteryData || [];
                 $.each(Lottery.lotteryData, function(index, item) {
-                    Lottery.memberLs = $.merge(Lottery.memberLs, item["memb"] || []);
+                    Lottery.memberLs = $.merge(Lottery.memberLs, item.memb || []);
+                    item.luckyDogs = [];
                 });
                 Lottery.resortItems();
-                Lottery.showMessage("按空格键开始抽奖");
-            }
+
+
+//            }
+//        });
+    },
+
+
+    completeLottery: function () {
+        window.sessionStorage.currentState = 'complete';
+
+        var msg = "";
+
+        $.each(Lottery.lotteryData, function(index, item) {
+            var lotteryName = item.name; // 奖项名称
+            msg += lotteryName + "(" + item.luckyDogs.length + "人)<p>" + item.luckyDogs.join('&nbsp;') + "<p>";
         });
+
+        Lottery.showMultiLinesMessage(msg, 40);
+        $('.helpdiv').hide();
+    },
+
+    initialItem: function() {
+        if (this.isComplete()) {
+            this.completeLottery();
+            return;
+        }
+
+        var itemOrder = Lottery.currentLotteryOrder;
+        var item = Lottery.lotteryData[itemOrder];
+        var lotteryName = item.name; // 奖项名称
+
+        Lottery.showMessage(lotteryName + "&nbsp;" + item.predefinedNum +  "名");
     },
 
     resortItems : function() {
         var width = document.body.offsetWidth;
         var height = document.body.offsetHeight;
-        $("#lotteryPage").css({"width" : width + "px", "height" : height + "px"});
+        $("#lotteryPage").css({width : width + "px", height : height + "px"});
 
         var memberCount = Lottery.memberLs.length;
         var gridCount = Math.ceil(Math.sqrt(memberCount));
@@ -67,9 +111,20 @@ var Lottery = {
     },
 
     showMessage : function(message) {
-        $(".thickdiv").css({"width" : document.body.offsetWidth + "px",
-                            "height" : document.body.offsetHeight + "px",
-                            "line-height" : document.body.offsetHeight + "px"});
+        $(".thickdiv").css({width : document.body.offsetWidth + "px",
+                            height : document.body.offsetHeight + "px",
+                            "line-height" : document.body.offsetHeight + "px",
+                            "font-size": "120px"});
+        $(".thickdiv").html(message);
+        $(".thickdiv").show();
+        $(".helpdiv").show();
+    },
+
+    showMultiLinesMessage : function(message, fontSize) {
+        $(".thickdiv").css({width : document.body.offsetWidth + "px",
+            height : document.body.offsetHeight + "px",
+            "line-height" :"",
+            "font-size": (fontSize || 100 ) + "px"});
         $(".thickdiv").html(message);
         $(".thickdiv").show();
         $(".helpdiv").show();
@@ -80,20 +135,38 @@ var Lottery = {
         $(".helpdiv").hide();
     },
 
+    isComplete: function () {
+        return Lottery.memberLs.length <= 0 || Lottery.currentLotteryOrder >= Lottery.lotteryData.length;
+    },
+
     startLottery : function() {
-        if (Lottery.memberLs.length <= 0 || Lottery.currentLotteryOrder >= Lottery.lotteryData.length) {
-            Lottery.showMessage("抽奖结束");
+        if (this.isComplete()) {
+            this.completeLottery();
             return;
         }
+
         window.sessionStorage.currentState = "lottery";
         Lottery.doLottery();
         Lottery.hideMessage();
     },
 
+    itemSummary: function() {
+        var itemOrder = Lottery.currentLotteryOrder;
+        var item = Lottery.lotteryData[itemOrder];
+        var lotteryName = item.name; // 奖项名称
+        Lottery.showMultiLinesMessage(
+                lotteryName + "中奖者(" + item.luckyDogs.length + "):<p>" + item.luckyDogs.join('&nbsp;'));
+    },
+
     doLottery : function() {
         Lottery.nextRandomOrder();
         if (window.sessionStorage.currentState == "standby") {
-            Lottery.showMessage("中奖者：" + Lottery.currentLotteryMember());
+            var itemOrder = Lottery.currentLotteryOrder;
+            var item = Lottery.lotteryData[itemOrder];
+            var lotteryName = item.name; // 奖项名称
+            var luckyDog = Lottery.currentLotteryMember(); // 中奖人姓名
+
+            Lottery.showMessage(lotteryName + "(" + (item.luckyDogs.length + 1) + "/" + item.predefinedNum +  ")：" + luckyDog); // 中奖显示  三等奖：XXX
         } else {
             setTimeout("Lottery.doLottery()", 50000./Lottery.lotteryTimeInterval);
 
@@ -129,13 +202,18 @@ var Lottery = {
     },
 
     confirmLottery : function() {
-        Lottery.memberLs.splice($.inArray(Lottery.currentLotteryMember(), Lottery.memberLs), 1);
-        Lottery.currentLotteryMemberList().splice($.inArray(Lottery.currentLotteryMember(), Lottery.currentLotteryMemberList()), 1);
+        var itemOrder = Lottery.currentLotteryOrder;
+        var item = Lottery.lotteryData[itemOrder];
+        var luckyDog = Lottery.currentLotteryMember(); // 中奖人姓名
+        item.luckyDogs.push(luckyDog);
+
+        Lottery.memberLs.splice($.inArray(luckyDog, Lottery.memberLs), 1);
+        Lottery.currentLotteryMemberList().splice($.inArray(luckyDog, Lottery.currentLotteryMemberList()), 1);
         Lottery.resortItems();
     },
 
     currentLotteryMemberList : function() {
-        return Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"] || [];
+        return Lottery.lotteryData[Lottery.currentLotteryOrder].memb || [];
     }
 
 };
@@ -143,15 +221,17 @@ var Lottery = {
 window.sessionStorage.currentState = "initial";
 
 $(document).ready(function() {
-
     Lottery.initialLotteryData();
-
+    Lottery.initialItem();
 });
 
 $(document).keyup(function(e) {
     switch(e.which){
     case 32: // space
-        if (window.sessionStorage.currentState == "initial") {
+        if (window.sessionStorage.currentState == "prepareItem") {
+            Lottery.initialItem();
+            window.sessionStorage.currentState = "initial";
+        } else if (window.sessionStorage.currentState == "initial") {
             Lottery.startLottery();
         } else if (window.sessionStorage.currentState == "standby") {
             Lottery.confirmLottery();
@@ -162,8 +242,13 @@ $(document).keyup(function(e) {
         break;
     case 13: // enter
         if (window.sessionStorage.currentState == "standby") {
+            Lottery.confirmLottery();
+            Lottery.itemSummary();
+
             Lottery.currentLotteryOrder += 1;
-            Lottery.startLottery();
+            window.sessionStorage.currentState = "prepareItem";
+//            Lottery.initialItem();
+//            Lottery.startLottery();
         }
         break;
     case 8: // back space
