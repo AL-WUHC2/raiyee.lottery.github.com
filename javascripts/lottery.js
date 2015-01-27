@@ -7,11 +7,15 @@ var Lottery = {
 
     currentMemberOrder : -1,
 
-    currentLotteryOrder : 0,
+    currentLotteryOrder : -1,
+
+    lotteryLs : [],
 
     memberLs : [],
 
     lotteryData : [],
+
+    confirmData : {},
 
     lotteryTimeInterval : 100,
 
@@ -19,7 +23,7 @@ var Lottery = {
         $.ajax({
             type : "get",
             url : "http://al-wuhc2.github.io/raiyee.lottery.data.github.com/lottery.js",
-            cache : false, //默认值true
+            cache : false, // 默认值true
             dataType : "jsonp",
             jsonpCallback : "lottery_data",
             error : function() { alert("数据请求失败"); },
@@ -27,6 +31,7 @@ var Lottery = {
                 Lottery.memberLs = data.members || [];
                 Lottery.lotteryData = data.lotteryData || [];
                 $.each(Lottery.lotteryData, function(index, item) {
+                    Lottery.lotteryLs.push(item["name"]);
                     Lottery.memberLs = $.merge(Lottery.memberLs, item["memb"] || []);
                 });
                 Lottery.resortItems();
@@ -93,7 +98,7 @@ var Lottery = {
     doLottery : function() {
         Lottery.nextRandomOrder();
         if (window.sessionStorage.currentState == "standby") {
-            Lottery.showMessage("中奖者：" + Lottery.currentLotteryMember());
+            Lottery.showMessage(Lottery.lotteryLs[Lottery.currentLotteryOrder] + "：" + Lottery.currentLotteryMember());
         } else {
             setTimeout("Lottery.doLottery()", 50000./Lottery.lotteryTimeInterval);
 
@@ -129,6 +134,11 @@ var Lottery = {
     },
 
     confirmLottery : function() {
+        Lottery.confirmData[Lottery.lotteryLs[Lottery.currentLotteryOrder]] = Lottery.confirmData[Lottery.lotteryLs[Lottery.currentLotteryOrder]] || [];
+        Lottery.confirmData[Lottery.lotteryLs[Lottery.currentLotteryOrder]].push(Lottery.currentLotteryMember());
+    },
+
+    resortLottery : function() {
         Lottery.memberLs.splice($.inArray(Lottery.currentLotteryMember(), Lottery.memberLs), 1);
         Lottery.currentLotteryMemberList().splice($.inArray(Lottery.currentLotteryMember(), Lottery.currentLotteryMemberList()), 1);
         Lottery.resortItems();
@@ -136,6 +146,22 @@ var Lottery = {
 
     currentLotteryMemberList : function() {
         return Lottery.lotteryData[Lottery.currentLotteryOrder]["memb"] || [];
+    },
+
+    showCurrentConfirm : function() {
+        window.sessionStorage.currentState = "initial";
+        Lottery.showMessage(Lottery.reportMessage(Lottery.currentLotteryOrder));
+    },
+
+    reportMessage : function(lotteryOrder) {
+        var height = document.body.offsetHeight/Lottery.lotteryLs.length;
+        var report = "<div class='report' style='height:" + height + "px'><div class='reportHead'>"
+                   + Lottery.lotteryLs[lotteryOrder] + "</div><div class='reportBody'>";
+        $.each(Lottery.confirmData[Lottery.lotteryLs[lotteryOrder]], function(index, item) {
+            report += "<div class='reportItem'>" + item + "</div>";
+        });
+        report += "</div></div>";
+        return report;
     }
 
 };
@@ -152,9 +178,12 @@ $(document).keyup(function(e) {
     switch(e.which){
     case 32: // space
         if (window.sessionStorage.currentState == "initial") {
+            Lottery.currentLotteryOrder += 1;
+            if (Lottery.currentLotteryOrder > 1) Lottery.resortLottery();
             Lottery.startLottery();
         } else if (window.sessionStorage.currentState == "standby") {
             Lottery.confirmLottery();
+            Lottery.resortLottery();
             Lottery.startLottery();
         } else if (window.sessionStorage.currentState == "lottery") {
             Lottery.stopLottery();
@@ -162,8 +191,8 @@ $(document).keyup(function(e) {
         break;
     case 13: // enter
         if (window.sessionStorage.currentState == "standby") {
-            Lottery.currentLotteryOrder += 1;
-            Lottery.startLottery();
+            Lottery.confirmLottery();
+            Lottery.showCurrentConfirm();
         }
         break;
     case 8: // back space

@@ -50,6 +50,28 @@ body{
     text-align: center;
 }
 
+.thickdiv .report{
+    display: inline-block;
+    line-height: 50px;
+    font-size: 40px;
+    text-align: left;
+    padding: 30px;
+}
+
+.thickdiv .reportHead {
+    width: 35%;
+    display: inline-block;
+    float: left;
+    text-align: right;
+    padding: 0 10px;
+}
+
+.thickdiv .reportBody, .thickdiv .reportItem {
+    display: inline-block;
+    float: left;
+    padding: 0 10px;
+}
+
 .helpdiv {
     position: fixed !important;
     _position: absolute;
