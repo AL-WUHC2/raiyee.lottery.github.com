@@ -14,6 +14,8 @@ var Lottery = {
 
     lotteryData : [],
 
+    lotteryTimeInterval : 100,
+
     initialLotteryData : function() {
         $.ajax({
             type : "get",
@@ -92,13 +94,18 @@ var Lottery = {
     },
 
     doLottery : function() {
+        Lottery.nextRandomOrder();
         if (window.sessionStorage.currentState == "standby") {
-            Lottery.nextRandomOrder();
-            
             Lottery.showMessage("中奖者：" + Lottery.currentLotteryMember());
         } else {
-            Lottery.nextRandomOrder();
-            setTimeout("Lottery.doLottery()", 100);
+            setTimeout("Lottery.doLottery()", 50000./Lottery.lotteryTimeInterval);
+
+            if (window.sessionStorage.currentState == "lottery") {
+                Lottery.lotteryTimeInterval = Math.min(Lottery.lotteryTimeInterval + 100, 500);
+            } else if (window.sessionStorage.currentState == "shutting") {
+                if (Lottery.lotteryTimeInterval == 100) window.sessionStorage.currentState = "standby";
+                Lottery.lotteryTimeInterval = Math.max(Lottery.lotteryTimeInterval - 100, 100);
+            }
         }
     },
 
@@ -112,16 +119,16 @@ var Lottery = {
                 Lottery.currentMemberOrder = (Lottery.currentMemberOrder + 1) % memberCount;
             }
         }
-        $(".lotteryItem").css("z-index", "auto").find("img").attr("src", "images/normal.png").next().hide();
-        $(".lotteryItem:eq("+Lottery.currentMemberOrder+")").css("z-index", "5").find("img").attr("src", "images/highlighted.png").next().show();
+        $(".lotteryItem").css("z-index", "auto").find("label").hide();
+        $(".lotteryItem").eq(Lottery.currentMemberOrder).css("z-index", "5").find("label").show();
     },
 
     currentLotteryMember : function() {
-        return $(".lotteryItem:eq("+Lottery.currentMemberOrder+")").find("label").text();
+        return $(".lotteryItem").eq(Lottery.currentMemberOrder).find("label").text();
     },
 
     stopLottery : function() {
-        window.sessionStorage.currentState = "standby";
+        window.sessionStorage.currentState = "shutting";
     },
 
     confirmLottery : function() {
