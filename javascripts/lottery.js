@@ -1,4 +1,3 @@
-
 function shuffle(o) {
     for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
@@ -39,8 +38,7 @@ var Lottery = {
     resortItems : function() {
         var width = document.body.offsetWidth;
         var height = document.body.offsetHeight;
-        $("#lotteryPage").css("width", width + "px");
-        $("#lotteryPage").css("height", height + "px");
+        $("#lotteryPage").css({"width" : width + "px", "height" : height + "px"});
 
         var memberCount = Lottery.memberLs.length;
         var gridCount = Math.ceil(Math.sqrt(memberCount));
@@ -54,15 +52,14 @@ var Lottery = {
         var lotteryContent = "";
         $.each(Lottery.memberLs, function(index, item) {
             var radius = Math.random()*Math.PI*2;
-            lotteryContent += "<div class=\"lotteryItem\" style=\"position:absolute;left:"
+            lotteryContent += "<div class='lotteryItem' style='position:absolute;left:"
                             + (widthGridSize*currX+Math.sin(radius)*offsetSize-itemSize/2) + "px;top:"
-                            + (heightGridSize*currY+Math.cos(radius)*offsetSize-itemSize/2) + "px;\">"
-                            + "<div style=\"position:relative;\"><img src=\"images/normal.png\" width=\""
-                            + itemSize + "px\" height=\"" + itemSize + "px\"/>"
-                            + "<label style=\"top:-" +itemSize/4. + "px;left:-" +itemSize/4. + "px;width:" + itemSize*1.5 + "px;height:" + itemSize*1.5
-                            + "px;line-height:" + itemSize*1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;\">"
-                            + item + "</label></div>"
-                            + "</div>";
+                            + (heightGridSize*currY+Math.cos(radius)*offsetSize-itemSize/2) + "px;'>"
+                            + "<div style='position:relative;'><img src='images/normal.png' width='"
+                            + itemSize + "px' height='" + itemSize + "px'/>"
+                            + "<label style='top:-" +itemSize/4. + "px;left:-" +itemSize/4. + "px;width:" + itemSize*1.5 + "px;height:" + itemSize*1.5
+                            + "px;line-height:" + itemSize*1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;'>"
+                            + item + "</label></div></div>";
             ++currX;
             if (currX > gridCount) { currX = 1; ++currY; }
         });
@@ -70,9 +67,9 @@ var Lottery = {
     },
 
     showMessage : function(message) {
-        $(".thickdiv").css("width", document.body.offsetWidth + "px");
-        $(".thickdiv").css("height", document.body.offsetHeight + "px");
-        $(".thickdiv").css("line-height", document.body.offsetHeight + "px");
+        $(".thickdiv").css({"width" : document.body.offsetWidth + "px",
+                            "height" : document.body.offsetHeight + "px",
+                            "line-height" : document.body.offsetHeight + "px"});
         $(".thickdiv").html(message);
         $(".thickdiv").show();
         $(".helpdiv").show();
