@@ -37,14 +37,14 @@ var Lottery = {
 //            jsonpCallback : "lottery_data",
 //            error : function() { alert("数据请求失败"); },
 //            success : function(data) {
-                var data = Lottery.settingData;
-                Lottery.memberLs = data.members || [];
-                Lottery.lotteryData = data.lotteryData || [];
-                $.each(Lottery.lotteryData, function(index, item) {
-                    Lottery.memberLs = $.merge(Lottery.memberLs, item.memb || []);
-                    item.luckyDogs = [];
-                });
-                Lottery.resortItems();
+        var data = Lottery.settingData;
+        Lottery.memberLs = data.members || [];
+        Lottery.lotteryData = data.lotteryData || [];
+        $.each(Lottery.lotteryData, function(index, item) {
+            Lottery.memberLs = $.merge(Lottery.memberLs, item.memb || []);
+            item.luckyDogs = [];
+        });
+        Lottery.resortItems();
 
 
 //            }
@@ -59,7 +59,7 @@ var Lottery = {
 
         $.each(Lottery.lotteryData, function(index, item) {
             var lotteryName = item.name; // 奖项名称
-            msg += lotteryName + "(" + item.luckyDogs.length + "人)<p>" + item.luckyDogs.join('&nbsp;') + "<p>";
+            msg += lotteryName + "(" + item.luckyDogs.length + "人):<p>" + item.luckyDogs.join('&nbsp;') + "<p>";
         });
 
         Lottery.showMultiLinesMessage(msg, 40);
@@ -97,13 +97,13 @@ var Lottery = {
         $.each(Lottery.memberLs, function(index, item) {
             var radius = Math.random()*Math.PI*2;
             lotteryContent += "<div class='lotteryItem' style='position:absolute;left:"
-                            + (widthGridSize*currX+Math.sin(radius)*offsetSize-itemSize/2) + "px;top:"
-                            + (heightGridSize*currY+Math.cos(radius)*offsetSize-itemSize/2) + "px;'>"
-                            + "<div style='position:relative;'><img src='images/normal.png' width='"
-                            + itemSize + "px' height='" + itemSize + "px'/>"
-                            + "<label style='top:-" +itemSize/4. + "px;left:-" +itemSize/4. + "px;width:" + itemSize*1.5 + "px;height:" + itemSize*1.5
-                            + "px;line-height:" + itemSize*1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;'>"
-                            + item + "</label></div></div>";
+                + (widthGridSize*currX+Math.sin(radius)*offsetSize-itemSize/2) + "px;top:"
+                + (heightGridSize*currY+Math.cos(radius)*offsetSize-itemSize/2) + "px;'>"
+                + "<div style='position:relative;'><img src='images/normal.png' width='"
+                + itemSize + "px' height='" + itemSize + "px'/>"
+                + "<label style='top:-" +itemSize/4. + "px;left:-" +itemSize/4. + "px;width:" + itemSize*1.5 + "px;height:" + itemSize*1.5
+                + "px;line-height:" + itemSize*1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;'>"
+                + item + "</label></div></div>";
             ++currX;
             if (currX > gridCount) { currX = 1; ++currY; }
         });
@@ -112,9 +112,9 @@ var Lottery = {
 
     showMessage : function(message) {
         $(".thickdiv").css({width : document.body.offsetWidth + "px",
-                            height : document.body.offsetHeight + "px",
-                            "line-height" : document.body.offsetHeight + "px",
-                            "font-size": "120px"});
+            height : document.body.offsetHeight + "px",
+            "line-height" : document.body.offsetHeight + "px",
+            "font-size": "120px"});
         $(".thickdiv").html(message);
         $(".thickdiv").show();
         $(".helpdiv").show();
@@ -227,34 +227,34 @@ $(document).ready(function() {
 
 $(document).keyup(function(e) {
     switch(e.which){
-    case 32: // space
-        if (window.sessionStorage.currentState == "prepareItem") {
-            Lottery.initialItem();
-            window.sessionStorage.currentState = "initial";
-        } else if (window.sessionStorage.currentState == "initial") {
-            Lottery.startLottery();
-        } else if (window.sessionStorage.currentState == "standby") {
-            Lottery.confirmLottery();
-            Lottery.startLottery();
-        } else if (window.sessionStorage.currentState == "lottery") {
-            Lottery.stopLottery();
-        }
-        break;
-    case 13: // enter
-        if (window.sessionStorage.currentState == "standby") {
-            Lottery.confirmLottery();
-            Lottery.itemSummary();
+        case 32: // space
+            if (window.sessionStorage.currentState == "prepareItem") {
+                Lottery.initialItem();
+                window.sessionStorage.currentState = "initial";
+            } else if (window.sessionStorage.currentState == "initial") {
+                Lottery.startLottery();
+            } else if (window.sessionStorage.currentState == "standby") {
+                Lottery.confirmLottery();
+                Lottery.startLottery();
+            } else if (window.sessionStorage.currentState == "lottery") {
+                Lottery.stopLottery();
+            }
+            break;
+        case 13: // enter
+            if (window.sessionStorage.currentState == "standby") {
+                Lottery.confirmLottery();
+                Lottery.itemSummary();
 
-            Lottery.currentLotteryOrder += 1;
-            window.sessionStorage.currentState = "prepareItem";
+                Lottery.currentLotteryOrder += 1;
+                window.sessionStorage.currentState = "prepareItem";
 //            Lottery.initialItem();
 //            Lottery.startLottery();
-        }
-        break;
-    case 8: // back space
-        if (window.sessionStorage.currentState == "standby") {
-            Lottery.startLottery();
-        }
-        break;
+            }
+            break;
+        case 8: // back space
+            if (window.sessionStorage.currentState == "standby") {
+                Lottery.startLottery();
+            }
+            break;
     }
 });
