@@ -1,34 +1,42 @@
 function shuffle(o) {
-    for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }
 
 var Lottery = {
 
-    currentMemberOrder : -1,
+    currentMemberOrder: -1,
 
-    currentLotteryOrder : 0,
+    currentLotteryOrder: 0,
 
-    memberLs : [],
+    memberLs: [],
 
-    lotteryData : [],
+    lotteryData: [],
 
-    lotteryTimeInterval : 100,
+    lotteryTimeInterval: 100,
 
     settingData: {lotteryData: [
         {name: "三等奖", predefinedNum: 10, memb: []},
         {name: "二等奖", predefinedNum: 5, memb: []},
         {name: "一等奖", predefinedNum: 3, memb: []}
     ],
-        members: ["李晓莉", "童剑", "冯雨","高婷", "卞雅萍", "李田一",
-            "杜颖", "牛洋", "刘雷", "高禹", "付强",
-            "严宾", "袁帅帅", "李栋栋", "耿晋普", "刘华洋",
-            "冯高飞", "闫永红", "周宇", "孙俊", "曹盛",
-            "刘嗣颉", "张发官", "熊震霏", "王彬彬", "陈江南", "吉思静",
-            "张鑫", "陈龙", "刘明玥", "汪沁", "宋瑶", "储韩菲", "桂冠"]
+        members: ["曹操", "曹仁", "曹洪", "曹纯", "曹休", "曹真", "曹昂", "曹丕",
+            "曹彰", "曹植", "陈到", "陈宫", "陈珪", "陈登", "陈琳", "陈群", "陈武",
+            "陈震", "崔琰", "崔林", "程普", "程秉", "程昱", "淳于琼",
+            "邓艾", "邓芝", "典韦", "丁奉", "丁原", "董和", "董袭", "董昭", "董卓", "杜畿",
+            "法正", "费祎", "逢纪", "伏完", "伏德", "甘宁", "高干", "高览", "高顺", "关羽",
+            "管宁", "郭淮", "郭嘉", "国渊", "顾雍", "韩当", "韩浩", "韩遂", "郝昭", "何晏",
+            "华佗", "华歆", "皇甫嵩", "黄盖", "黄权", "黄琬", "黄忠", "霍峻", "贾诩", "姜维",
+            "蒋干", "蒋钦", "蒋琬", "谯周", "沮授", "阚泽", "孔融", "蒯良", "蒯越",
+            "乐进", "李典", "李恢", "李儒", "李通", "李严", "梁习", "廖化", "凌统", "刘巴",
+            "刘表", "刘备", "刘馥（fu）", "刘焉", "刘璋", "刘繇", "刘晔（ye）", "刘虞", "吕布",
+            "吕范", "吕凯", "吕蒙", "吕虔", "鲁肃", "陆逊", "卢植", "马良", "马谡", "马钧",
+            "马日磾", "马腾", "马超", "马岱", "满宠", "毛玠", "孟达", "糜竺", "糜芳", "弥横",
+            "潘璋", "庞德", "庞统", "彭羕", "秦宓", "麴（qu）义", "审配", "士孙瑞", "司马朗",
+            "司马懿", "司马师", "司马昭", "孙坚"]
     },
 
-    initialLotteryData : function() {
+    initialLotteryData: function () {
 //        $.ajax({
 //            type : "get",
 //            url : "http://al-wuhc2.github.io/raiyee.lottery.data.github.com/lottery.js",
@@ -40,7 +48,7 @@ var Lottery = {
         var data = Lottery.settingData;
         Lottery.memberLs = data.members || [];
         Lottery.lotteryData = data.lotteryData || [];
-        $.each(Lottery.lotteryData, function(index, item) {
+        $.each(Lottery.lotteryData, function (index, item) {
             Lottery.memberLs = $.merge(Lottery.memberLs, item.memb || []);
             item.luckyDogs = [];
         });
@@ -57,7 +65,7 @@ var Lottery = {
 
         var msg = "";
 
-        $.each(Lottery.lotteryData, function(index, item) {
+        $.each(Lottery.lotteryData, function (index, item) {
             var lotteryName = item.name; // 奖项名称
             msg += lotteryName + "(" + item.luckyDogs.length + "人):<p>" + item.luckyDogs.join('&nbsp;') + "<p>";
         });
@@ -66,7 +74,7 @@ var Lottery = {
         $('.helpdiv').hide();
     },
 
-    initialItem: function() {
+    initialItem: function () {
         if (this.isComplete()) {
             this.completeLottery();
             return;
@@ -76,13 +84,13 @@ var Lottery = {
         var item = Lottery.lotteryData[itemOrder];
         var lotteryName = item.name; // 奖项名称
 
-        Lottery.showMessage(lotteryName + "&nbsp;" + item.predefinedNum +  "名");
+        Lottery.showMessage(lotteryName + "&nbsp;" + item.predefinedNum + "名");
     },
 
-    resortItems : function() {
+    resortItems: function () {
         var width = document.body.offsetWidth;
         var height = document.body.offsetHeight;
-        $("#lotteryPage").css({width : width + "px", height : height + "px"});
+        $("#lotteryPage").css({width: width + "px", height: height + "px"});
 
         var memberCount = Lottery.memberLs.length;
         var gridCount = Math.ceil(Math.sqrt(memberCount));
@@ -94,43 +102,46 @@ var Lottery = {
         shuffle(Lottery.memberLs);
         var currX = 1, currY = 1;
         var lotteryContent = "";
-        $.each(Lottery.memberLs, function(index, item) {
-            var radius = Math.random()*Math.PI*2;
+        $.each(Lottery.memberLs, function (index, item) {
+            var radius = Math.random() * Math.PI * 2;
             lotteryContent += "<div class='lotteryItem' style='position:absolute;left:"
-                + (widthGridSize*currX+Math.sin(radius)*offsetSize-itemSize/2) + "px;top:"
-                + (heightGridSize*currY+Math.cos(radius)*offsetSize-itemSize/2) + "px;'>"
+                + (widthGridSize * currX + Math.sin(radius) * offsetSize - itemSize / 2) + "px;top:"
+                + (heightGridSize * currY + Math.cos(radius) * offsetSize - itemSize / 2) + "px;'>"
                 + "<div style='position:relative;'><img src='images/normal.png' width='"
                 + itemSize + "px' height='" + itemSize + "px'/>"
-                + "<label style='top:-" +itemSize/4. + "px;left:-" +itemSize/4. + "px;width:" + itemSize*1.5 + "px;height:" + itemSize*1.5
-                + "px;line-height:" + itemSize*1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;'>"
+                + "<label style='top:-" + itemSize / 4. + "px;left:-" + itemSize / 4. + "px;width:" + itemSize * 1.5 + "px;height:" + itemSize * 1.5
+                + "px;line-height:" + itemSize * 1.5 + "px;display:none;background:url(images/highlighted.png);background-size:contain;'>"
                 + item + "</label></div></div>";
             ++currX;
-            if (currX > gridCount) { currX = 1; ++currY; }
+            if (currX > gridCount) {
+                currX = 1;
+                ++currY;
+            }
         });
         $("#lotteryPage").html(lotteryContent);
     },
 
-    showMessage : function(message) {
-        $(".thickdiv").css({width : document.body.offsetWidth + "px",
-            height : document.body.offsetHeight + "px",
-            "line-height" : document.body.offsetHeight + "px",
+    showMessage: function (message) {
+        $(".thickdiv").css({width: document.body.offsetWidth + "px",
+            height: document.body.offsetHeight + "px",
+            "line-height": document.body.offsetHeight + "px",
             "font-size": "120px"});
         $(".thickdiv").html(message);
         $(".thickdiv").show();
         $(".helpdiv").show();
     },
 
-    showMultiLinesMessage : function(message, fontSize) {
-        $(".thickdiv").css({width : document.body.offsetWidth + "px",
-            height : document.body.offsetHeight + "px",
-            "line-height" :"",
+    showMultiLinesMessage: function (message, fontSize) {
+        $(".thickdiv").css({width: document.body.offsetWidth + "px",
+            height: document.body.offsetHeight + "px",
+            "line-height": "",
             "font-size": (fontSize || 100 ) + "px"});
         $(".thickdiv").html(message);
         $(".thickdiv").show();
         $(".helpdiv").show();
     },
 
-    hideMessage : function() {
+    hideMessage: function () {
         $(".thickdiv").hide();
         $(".helpdiv").hide();
     },
@@ -139,7 +150,7 @@ var Lottery = {
         return Lottery.memberLs.length <= 0 || Lottery.currentLotteryOrder >= Lottery.lotteryData.length;
     },
 
-    startLottery : function() {
+    startLottery: function () {
         if (this.isComplete()) {
             this.completeLottery();
             return;
@@ -150,7 +161,7 @@ var Lottery = {
         Lottery.hideMessage();
     },
 
-    itemSummary: function() {
+    itemSummary: function () {
         var itemOrder = Lottery.currentLotteryOrder;
         var item = Lottery.lotteryData[itemOrder];
         var lotteryName = item.name; // 奖项名称
@@ -158,7 +169,7 @@ var Lottery = {
                 lotteryName + "中奖者(" + item.luckyDogs.length + "):<p>" + item.luckyDogs.join('&nbsp;'));
     },
 
-    doLottery : function() {
+    doLottery: function () {
         Lottery.nextRandomOrder();
         if (window.sessionStorage.currentState == "standby") {
             var itemOrder = Lottery.currentLotteryOrder;
@@ -166,9 +177,9 @@ var Lottery = {
             var lotteryName = item.name; // 奖项名称
             var luckyDog = Lottery.currentLotteryMember(); // 中奖人姓名
 
-            Lottery.showMessage(lotteryName + "(" + (item.luckyDogs.length + 1) + "/" + item.predefinedNum +  ")：" + luckyDog); // 中奖显示  三等奖：XXX
+            Lottery.showMessage(lotteryName + "(" + (item.luckyDogs.length + 1) + "/" + item.predefinedNum + ")：" + luckyDog); // 中奖显示  三等奖：XXX
         } else {
-            setTimeout("Lottery.doLottery()", 50000./Lottery.lotteryTimeInterval);
+            setTimeout("Lottery.doLottery()", 50000. / Lottery.lotteryTimeInterval);
 
             if (window.sessionStorage.currentState == "lottery") {
                 Lottery.lotteryTimeInterval = Math.min(Lottery.lotteryTimeInterval + 100, 500);
@@ -179,7 +190,7 @@ var Lottery = {
         }
     },
 
-    nextRandomOrder : function() {
+    nextRandomOrder: function () {
         var memberCount = Lottery.memberLs.length;
         // at least increase 1
         var increase = parseInt(Math.random() * (memberCount - 1)) + 1;
@@ -193,15 +204,15 @@ var Lottery = {
         $(".lotteryItem").eq(Lottery.currentMemberOrder).css("z-index", "5").find("label").show();
     },
 
-    currentLotteryMember : function() {
+    currentLotteryMember: function () {
         return $(".lotteryItem").eq(Lottery.currentMemberOrder).find("label").text();
     },
 
-    stopLottery : function() {
+    stopLottery: function () {
         window.sessionStorage.currentState = "shutting";
     },
 
-    confirmLottery : function() {
+    confirmLottery: function () {
         var itemOrder = Lottery.currentLotteryOrder;
         var item = Lottery.lotteryData[itemOrder];
         var luckyDog = Lottery.currentLotteryMember(); // 中奖人姓名
@@ -212,7 +223,7 @@ var Lottery = {
         Lottery.resortItems();
     },
 
-    currentLotteryMemberList : function() {
+    currentLotteryMemberList: function () {
         return Lottery.lotteryData[Lottery.currentLotteryOrder].memb || [];
     }
 
@@ -220,13 +231,13 @@ var Lottery = {
 
 window.sessionStorage.currentState = "initial";
 
-$(document).ready(function() {
+$(document).ready(function () {
     Lottery.initialLotteryData();
     Lottery.initialItem();
 });
 
-$(document).keyup(function(e) {
-    switch(e.which){
+$(document).keyup(function (e) {
+    switch (e.which) {
         case 32: // space
             if (window.sessionStorage.currentState == "prepareItem") {
                 Lottery.initialItem();
