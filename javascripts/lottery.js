@@ -185,7 +185,7 @@ var Lottery = {
         }
         , doLottery: function () {
             Lottery.nextRandomOrder();
-            if (window.sessionStorage.currentState == "standby") {
+            if (window.sessionStorage.currentState == "caculate") {
                 Lottery.lotteryTimeInterval = 100;
 
                 var itemOrder = Lottery.currentLotteryOrder;
@@ -194,6 +194,7 @@ var Lottery = {
                 var luckyDog = Lottery.currentLotteryMember(); // 中奖人姓名
 
                 Lottery.showMessage(lotteryName + "(" + (item.luckyDogs.length + 1) + "/" + item.predefinedNum + ")：" + luckyDog); // 中奖显示  三等奖：XXX
+                window.sessionStorage.currentState = "standby"
             } else {
                 setTimeout("Lottery.doLottery()", 50000. / Lottery.lotteryTimeInterval);
 
@@ -210,7 +211,7 @@ var Lottery = {
             // at least increase 1
             var increase = parseInt(Math.random() * (memberCount - 1)) + 1;
             Lottery.currentMemberOrder = (Lottery.currentMemberOrder + increase) % memberCount;
-            if (window.sessionStorage.currentState == "standby" && Lottery.currentLotteryMemberList().length > 0) {
+            if (window.sessionStorage.currentState == "caculate" && Lottery.currentLotteryMemberList().length > 0) {
                 while ($.inArray(Lottery.memberLs[Lottery.currentMemberOrder], Lottery.currentLotteryMemberList()) == -1) {
                     Lottery.currentMemberOrder = (Lottery.currentMemberOrder + 1) % memberCount;
                 }
@@ -222,7 +223,7 @@ var Lottery = {
             return $(".lotteryItem").eq(Lottery.currentMemberOrder).find("label").text();
         }
         , stopLottery: function () {
-            window.sessionStorage.currentState = "standby";
+            window.sessionStorage.currentState = "caculate";
         }
         , confirmLottery: function () {
             var itemOrder = Lottery.currentLotteryOrder;
