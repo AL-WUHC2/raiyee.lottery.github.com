@@ -13,19 +13,24 @@ var Lottery = {
         settingData: {
             lotteryData: [
                 {
-                    name: "三等奖",
-                    predefinedNum: 10,
+                    name: "三等奖", // 奖项名称
+                    predefinedNum: 10, // 抽奖人数
                     memb: "赵三 钱三 孙三 李三 周三 吴三 郑三 王三 杨三 朱三 秦三 尤三 许三 何三 吕三 施三 张三 姜三 戚三 谢三 邹三 喻三 柏三 水三 窦三 章三 郎三 鲁三 韦三 昌三 马三 苗三 凤三 花三 方三 唐三"
-                },
-                {
-                    name: "二等奖",
-                    predefinedNum: 5,
+                }
+                , {
+                    name: "二等奖", // 奖项名称
+                    predefinedNum: 5, // 抽奖人数
                     memb: "赵二 钱二 孙二 李二 周二 吴二 郑二 王二 杨二 朱二 秦二 尤二 许二 何二 吕二 施二 张二 姜二 戚二 谢二 邹二 喻二 柏二 水二 窦二 章二 郎二 鲁二 韦二 昌二 马二 苗二 凤二 花二 方二 唐二"
-                },
-                {
-                    name: "一等奖",
-                    predefinedNum: 3,
+                }
+                , {
+                    name: "一等奖", // 奖项名称
+                    predefinedNum: 3,// 抽奖人数
                     memb: "赵一 钱一 孙一 李一 周一 吴一 郑一 王一 杨一 朱一 秦一 尤一 许一 何一 吕一 施一 张一 姜一 戚一 谢一 邹一 喻一 柏一 水一 窦一 章一 郎一 鲁一 韦一 昌一 马一 苗一 凤一 花一 方一 唐一"
+                }
+                , {
+                    name: "特等奖", // 奖项名称
+                    predefinedNum: 2,// 抽奖人数
+                    memb: "赵特 钱特 孙特 李特 周特 吴特 郑特 王特 杨特 朱特 秦特 尤特 许特 何特 吕特 施特 张特 姜特 戚特 谢特 邹特 喻特 柏特 水特 窦特 章特 郎特 鲁特 韦特 昌特 马特 苗特 凤特 花特 方特 唐特"
                 }
             ]
             //, members: "曹操 曹仁 曹洪 曹纯 曹休 曹真 曹昂 曹丕  " +
@@ -182,7 +187,7 @@ var Lottery = {
             Lottery.nextRandomOrder();
             if (window.sessionStorage.currentState == "standby") {
                 Lottery.lotteryTimeInterval = 100;
-                
+
                 var itemOrder = Lottery.currentLotteryOrder;
                 var item = Lottery.lotteryData[itemOrder];
                 var lotteryName = item.name; // 奖项名称
