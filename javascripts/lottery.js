@@ -181,6 +181,8 @@ var Lottery = {
         , doLottery: function () {
             Lottery.nextRandomOrder();
             if (window.sessionStorage.currentState == "standby") {
+                Lottery.lotteryTimeInterval = 100;
+                
                 var itemOrder = Lottery.currentLotteryOrder;
                 var item = Lottery.lotteryData[itemOrder];
                 var lotteryName = item.name; // 奖项名称
@@ -215,7 +217,7 @@ var Lottery = {
             return $(".lotteryItem").eq(Lottery.currentMemberOrder).find("label").text();
         }
         , stopLottery: function () {
-            window.sessionStorage.currentState = "shutting";
+            window.sessionStorage.currentState = "standby";
         }
         , confirmLottery: function () {
             var itemOrder = Lottery.currentLotteryOrder;
