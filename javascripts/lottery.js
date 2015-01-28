@@ -3,6 +3,15 @@ function shuffle(o) {
     return o;
 }
 
+function unique(o) {
+    for (var i = 0; i < o.length; i++) {
+        for(var j = i + 1; j < o.length; j++) {
+            if(o[i] === o[j]) { o.splice(j, 1); j--; }
+        }
+    }
+    return o;
+};
+
 var Lottery = {
         currentMemberOrder: -1,
         currentLotteryOrder: 0,
@@ -73,6 +82,7 @@ var Lottery = {
                 Lottery.memberLs = $.merge(Lottery.memberLs, item.memb || []);
                 item.luckyDogs = [];
             });
+            Lottery.memberLs = unique(Lottery.memberLs);
             Lottery.resortItems();
 
 
